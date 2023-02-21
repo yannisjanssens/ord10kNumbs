@@ -1,8 +1,6 @@
 const axios = require('axios')
 
 const ORD_URL = 'https://turbo.ordinalswallet.com'
-const dataByEmoji = require('unicode-emoji-json/data-by-emoji.json')
-const orderedEmojis = require('unicode-emoji-json/data-ordered-emoji.json')
 const child_process = require('child_process')
 
 const fs = require('fs')
@@ -43,6 +41,8 @@ function updateGithub() {
 }
 
 async function processBatch(inscriptions) {
+    const dataByEmoji = JSON.parse(fs.readFileSync('data-by-emoji.json'))
+
     const textInscriptions = inscriptions.filter(it => it.content_type === 'text/plain;charset=utf-8')
     const promises = textInscriptions.map(async (it) => {
         const res = await axios.get(`${ORD_URL}/inscription/content/${it.id}`)
@@ -73,7 +73,7 @@ function markFullyIndexed(topInscriptionNum) {
     storage.syncedToNum = topInscriptionNum
     storage.latestOffset = 0
     fs.writeFileSync(STORAGE_FILE, JSON.stringify(storage, null, 2))
-    updateGithub()
+    //updateGithub()
 }
 
 let topInscriptionNum
